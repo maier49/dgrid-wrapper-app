@@ -1,0 +1,31 @@
+{
+  "name": "dgrid-wrapper-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "@dojo/core": "^2.0.0",
+    "@dojo/has": "^2.0.0",
+    "@dojo/i18n": "^2.0.0",
+    "@dojo/interop": "file:packages\\dojo-interop-2.0.1.tgz",
+    "@dojo/routing": "^2.0.0",
+    "@dojo/shim": "^2.0.0",
+    "@dojo/widget-core": "^2.0.4",
+    "@dojo/widgets": "^2.0.0",
+    "dgrid": "^1.2.1",
+    "dijit": "^1.13.0",
+    "dojo": "^1.13.0",
+    "dojo-dstore": "^1.1.2",
+    "dojo-util": "^1.13.0",
+    "tslib": "~1.8.1"
+  },
+  "devDependencies": {
+    "@dojo/cli-build-app": "file:packages\\dojo-cli-build-app-2.0.2.tgz",
+    "@dojo/cli-test-intern": "file:packages\\dojo-cli-test-intern-2.0.1.tgz",
+    "@dojo/test-extras": "^2.0.0",
+    "@types/glob": "~5.0.0",
+    "@types/grunt": "~0.4.0",
+    "@types/node": "^6.0.46",
+    "@types/sinon": "^1.16.35",
+    "intern": "~4.1.5",
+    "typescript": "~2.6.1"
+  }
+}

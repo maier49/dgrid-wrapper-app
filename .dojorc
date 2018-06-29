@@ -1,0 +1,12 @@
+{
+	"build-app": {
+          "dojo-loader-config": {
+            "baseUrl": "node_modules",
+            "packages": [
+              { "name": "dstore", "location": "dojo-dstore" }
+            ]
+          }
+        },
+	"test-intern": {},
+	"create-app": {}
+}
