@@ -12,15 +12,9 @@ describe('App', () => {
 		h.expect(() =>
 			v('div', {}, [
 				w(DgridWrapper, {
-				  columns: [
-            { field: 'first', label: 'First' },
-            { field: 'last', label: 'Last' }
-          ],
-          data: [
-            { first: 'Bob', last: 'Thomson', id: 1 },
-            { first: 'Tom', last: 'Bobson', id: 2 }
-          ]
-        })
+					columns: [{ field: 'first', label: 'First' }, { field: 'last', label: 'Last' }],
+					data: [{ first: 'Bob', last: 'Thomson', id: 1 }, { first: 'Tom', last: 'Bobson', id: 2 }]
+				})
 			])
 		);
 	});
