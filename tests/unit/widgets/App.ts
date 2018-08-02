@@ -1,7 +1,7 @@
 const { describe, it } = intern.getInterface('bdd');
-import harness from '@dojo/test-extras/harness';
+import harness from '@dojo/framework/test-extras/harness';
 
-import { v, w } from '@dojo/widget-core/d';
+import { v, w } from '@dojo/framework/widget-core/d';
 import DgridWrapper from '@dojo/interop/dgrid/DgridWrapper';
 
 import App from '../../../src/widgets/App';

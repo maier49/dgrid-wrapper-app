@@ -1,7 +1,7 @@
-import WidgetBase from '@dojo/widget-core/WidgetBase';
-import { v, w } from '@dojo/widget-core/d';
+import WidgetBase from '@dojo/framework/widget-core/WidgetBase';
+import { v, w } from '@dojo/framework/widget-core/d';
 import DgridWrapper from '@dojo/interop/dgrid/DgridWrapper';
-import { duplicate } from '@dojo/core/lang';
+import { duplicate } from '@dojo/framework/core/lang';
 
 export class App extends WidgetBase {
 	private data = [{ first: 'Bob', last: 'Thomson', id: 1 }, { first: 'Tom', last: 'Bobson', id: 2 }];
