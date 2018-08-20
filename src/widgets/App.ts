@@ -10,14 +10,19 @@ export class App extends WidgetBase {
 		return v('div', {}, [
 			w(DgridWrapper, {
 				features: {
-					pagination: this.paginationOn
+					pagination: this.paginationOn,
+					keyboard: this.keyboardOn
 				},
 				data: this.data,
 				columns: this.columnDefs[this.columnToggle],
+
 				rowsPerPage: this.rowsPerPage,
 				previousNextArrows: this.previousNextArrows,
 				firstLastArrows: this.firstLastArrows,
-				pagingLinks: this.pagingLinks
+				pagingLinks: this.pagingLinks,
+
+				pageSkip: this.pageSkip,
+				tabIndex: 2
 			}),
 			v(
 				'button',
@@ -42,6 +47,16 @@ export class App extends WidgetBase {
 					['Toggle Pagination']
 				),
 				v('div', this.renderPaginationButtons())
+			]),
+			v('p', [
+				v(
+					'button',
+					{
+						onclick: this.toggleKeyboard
+					},
+					['Toggle Keyboard']
+				),
+				v('div', this.renderKeyboardButtons())
 			])
 		]);
 	}
@@ -119,6 +134,32 @@ export class App extends WidgetBase {
 	private swapColumnDef(): void {
 		this.columnToggle = this.columnToggle ? 0 : 1;
 		this.invalidate();
+	}
+
+	keyboardOn = false;
+	private toggleKeyboard(): void {
+		this.keyboardOn = !this.keyboardOn;
+		this.invalidate();
+	}
+
+	private renderKeyboardButtons() {
+		if (this.keyboardOn) {
+			return [
+				v('button', { onclick: this.updatePageSkip }, ['Set Page Skip ' + this.nextPageSkip()])
+			];
+		} else {
+			return [];
+		}
+	}
+
+	pageSkip = 3;
+	private updatePageSkip(): void {
+		this.pageSkip = this.nextPageSkip();
+		this.invalidate();
+	}
+
+	private nextPageSkip() {
+		return (this.pageSkip + 2) % 9;
 	}
 }
 
