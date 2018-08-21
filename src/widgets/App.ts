@@ -2,7 +2,7 @@ import WidgetBase from '@dojo/framework/widget-core/WidgetBase';
 import { v, w } from '@dojo/framework/widget-core/d';
 import DgridWrapper from '@dojo/interop/dgrid/DgridWrapper';
 import { duplicate } from '@dojo/framework/core/lang';
-import { SelectionData, SelectionMode, Selections } from '@dojo/interop/dgrid/DgridWrapperProperties';
+import { SelectionData, SelectionMode, Selections, SelectionType } from '@dojo/interop/dgrid/DgridWrapperProperties';
 
 function buildToggleLabel(label: string, currentValue: boolean) {
 	return 'Turn ' + label + (currentValue ? ' Off' : ' On');
@@ -16,7 +16,7 @@ export class App extends WidgetBase {
 				features: {
 					pagination: this.paginationOn,
 					keyboard: this.keyboardOn,
-					selection: this.selectionOn
+					selection: this.selectionType
 				},
 				data: this.data,
 				columns: this.columnDefs[this.columnToggle],
@@ -80,9 +80,9 @@ export class App extends WidgetBase {
 				v(
 					'button',
 					{
-						onclick: this.toggleSelection
+						onclick: this.toggleSelectionOnOff
 					},
-					[buildToggleLabel('Selection', this.selectionOn)]
+					[buildToggleLabel('Selection', this.selectionType == null)]
 				),
 				v('div', this.renderSelectionButtons())
 			])
@@ -192,15 +192,24 @@ export class App extends WidgetBase {
 		return (this.pageSkip + 2) % 9;
 	}
 
-	selectionOn = false;
-	private toggleSelection(): void {
-		this.selectionOn = !this.selectionOn;
+	selectionType?: SelectionType;
+	private toggleSelectionOnOff(): void {
+		this.selectionType = this.selectionType ? undefined : SelectionType.row;
+		this.invalidate();
+	}
+	private toggleSelectionType(): void {
+		this.selectionType = this.selectionType === SelectionType.row ? SelectionType.cell : SelectionType.row;
 		this.invalidate();
 	}
 
 	private renderSelectionButtons() {
-		if (this.selectionOn) {
+		if (this.selectionType) {
 			return [
+				v('div', [
+					v('button', { onclick: this.toggleSelectionType }, [
+						'Set Selection Type ' + (this.selectionType === SelectionType.row ? 'Cell' : 'Row')
+					])
+				]),
 				v('div', [
 					v('button', { onclick: this.toggleDeselectOnRefresh }, [
 						buildToggleLabel('Deselect On Referesh', this.deselectOnRefresh)
