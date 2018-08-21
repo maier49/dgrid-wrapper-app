@@ -2,7 +2,11 @@ import WidgetBase from '@dojo/framework/widget-core/WidgetBase';
 import { v, w } from '@dojo/framework/widget-core/d';
 import DgridWrapper from '@dojo/interop/dgrid/DgridWrapper';
 import { duplicate } from '@dojo/framework/core/lang';
+import { SelectionMode } from '@dojo/interop/dgrid/DgridWrapperProperties';
 
+function buildToggleLabel(label: string, currentValue: boolean) {
+	return 'Turn ' + label + (currentValue ? ' Off' : ' On');
+}
 export class App extends WidgetBase {
 	private data = [{ first: 'Bob', last: 'Thomson', id: 1 }, { first: 'Tom', last: 'Bobson', id: 2 }];
 
@@ -11,7 +15,8 @@ export class App extends WidgetBase {
 			w(DgridWrapper, {
 				features: {
 					pagination: this.paginationOn,
-					keyboard: this.keyboardOn
+					keyboard: this.keyboardOn,
+					selection: this.selectionOn
 				},
 				data: this.data,
 				columns: this.columnDefs[this.columnToggle],
@@ -22,7 +27,13 @@ export class App extends WidgetBase {
 				pagingLinks: this.pagingLinks,
 
 				pageSkip: this.pageSkip,
-				tabIndex: 2
+				tabIndex: 2,
+
+				deselectOnRefresh: this.deselectOnRefresh,
+				allowSelectAll: this.allowSelectAll,
+				selection: this.selection,
+				selectionMode: this.selectionMode,
+				allowTextSelection: this.allowTextSelection
 			}),
 			v(
 				'button',
@@ -44,7 +55,7 @@ export class App extends WidgetBase {
 					{
 						onclick: this.togglePagination
 					},
-					['Toggle Pagination']
+					[buildToggleLabel('Pagination', this.paginationOn)]
 				),
 				v('div', this.renderPaginationButtons())
 			]),
@@ -54,9 +65,19 @@ export class App extends WidgetBase {
 					{
 						onclick: this.toggleKeyboard
 					},
-					['Toggle Keyboard']
+					[buildToggleLabel('Keyboard', this.keyboardOn)]
 				),
 				v('div', this.renderKeyboardButtons())
+			]),
+			v('p', [
+				v(
+					'button',
+					{
+						onclick: this.toggleSelection
+					},
+					[buildToggleLabel('Selection', this.selectionOn)]
+				),
+				v('div', this.renderSelectionButtons())
 			])
 		]);
 	}
@@ -65,9 +86,9 @@ export class App extends WidgetBase {
 		if (this.paginationOn) {
 			return [
 				v('button', { onclick: this.updateRowsPerPage }, ['Set Rows Per Page ' + this.nextRowsPerPage()]),
-				v('button', { onclick: this.togglePreviousNextArrows }, ['Toggle Prev/Next Arrows']),
-				v('button', { onclick: this.toggleFirstLastArrows }, ['Toggle First/Last Arrows']),
-				v('button', { onclick: this.updatePagingLinks }, ['Set Paging Links # ' + this.nextPagingLinks()]),
+				v('button', { onclick: this.togglePreviousNextArrows }, [buildToggleLabel('Prev/Next Arrows', this.previousNextArrows)]),
+				v('button', { onclick: this.toggleFirstLastArrows }, [buildToggleLabel('First/Last Arrows', this.firstLastArrows)]),
+				v('button', { onclick: this.updatePagingLinks }, ['Set Paging Links # ' + this.nextPagingLinks()])
 			];
 		} else {
 			return [];
@@ -144,9 +165,7 @@ export class App extends WidgetBase {
 
 	private renderKeyboardButtons() {
 		if (this.keyboardOn) {
-			return [
-				v('button', { onclick: this.updatePageSkip }, ['Set Page Skip ' + this.nextPageSkip()])
-			];
+			return [v('button', { onclick: this.updatePageSkip }, ['Set Page Skip ' + this.nextPageSkip()])];
 		} else {
 			return [];
 		}
@@ -160,6 +179,45 @@ export class App extends WidgetBase {
 
 	private nextPageSkip() {
 		return (this.pageSkip + 2) % 9;
+	}
+
+	selectionOn = false;
+	private toggleSelection(): void {
+		this.selectionOn = !this.selectionOn;
+		this.invalidate();
+	}
+
+	private renderSelectionButtons() {
+		if (this.selectionOn) {
+			return [
+				v('button', { onclick: this.toggleDeselectOnRefresh }, [buildToggleLabel('Deselect On Referesh', this.deselectOnRefresh)]),
+				v('button', { onclick: this.toggleAllowSelectAll }, [buildToggleLabel('Select All', this.allowSelectAll)]),
+				v('button', { onclick: this.toggleAllowTextSelection }, [buildToggleLabel('Allow Text Selection', this.allowTextSelection)]),
+			];
+		} else {
+			return [];
+		}
+	}
+
+	deselectOnRefresh = false;
+	private toggleDeselectOnRefresh(): void {
+		this.deselectOnRefresh = !this.deselectOnRefresh;
+		this.invalidate();
+	}
+
+	allowSelectAll = false;
+	private toggleAllowSelectAll(): void {
+		this.allowSelectAll = !this.allowSelectAll;
+		this.invalidate();
+	}
+
+	selection: { [id: string]: boolean };
+	selectionMode = SelectionMode.single;
+
+	allowTextSelection = false;
+	private toggleAllowTextSelection(): void {
+		this.allowTextSelection = !this.allowTextSelection;
+		this.invalidate();
 	}
 }
 
