@@ -2,7 +2,7 @@ import WidgetBase from '@dojo/framework/widget-core/WidgetBase';
 import { v, w } from '@dojo/framework/widget-core/d';
 import DgridWrapper from '@dojo/interop/dgrid/DgridWrapper';
 import { duplicate } from '@dojo/framework/core/lang';
-import { SelectionMode } from '@dojo/interop/dgrid/DgridWrapperProperties';
+import { SelectionData, SelectionMode, Selections } from '@dojo/interop/dgrid/DgridWrapperProperties';
 
 function buildToggleLabel(label: string, currentValue: boolean) {
 	return 'Turn ' + label + (currentValue ? ' Off' : ' On');
@@ -31,9 +31,16 @@ export class App extends WidgetBase {
 
 				deselectOnRefresh: this.deselectOnRefresh,
 				allowSelectAll: this.allowSelectAll,
-				selection: this.selection,
 				selectionMode: this.selectionMode,
-				allowTextSelection: this.allowTextSelection
+				allowTextSelection: this.allowTextSelection,
+				onSelect: (selected: SelectionData, selections: Selections) => {
+					console.log('SELECTED:', selected);
+					console.log('SELECTIONS:', selections);
+				},
+				onDeselect: (deselected: SelectionData, selections: Selections) => {
+					console.log('DESELECTED:', deselected);
+					console.log('SELECTIONS:', selections);
+				}
 			}),
 			v(
 				'button',
@@ -86,8 +93,12 @@ export class App extends WidgetBase {
 		if (this.paginationOn) {
 			return [
 				v('button', { onclick: this.updateRowsPerPage }, ['Set Rows Per Page ' + this.nextRowsPerPage()]),
-				v('button', { onclick: this.togglePreviousNextArrows }, [buildToggleLabel('Prev/Next Arrows', this.previousNextArrows)]),
-				v('button', { onclick: this.toggleFirstLastArrows }, [buildToggleLabel('First/Last Arrows', this.firstLastArrows)]),
+				v('button', { onclick: this.togglePreviousNextArrows }, [
+					buildToggleLabel('Prev/Next Arrows', this.previousNextArrows)
+				]),
+				v('button', { onclick: this.toggleFirstLastArrows }, [
+					buildToggleLabel('First/Last Arrows', this.firstLastArrows)
+				]),
 				v('button', { onclick: this.updatePagingLinks }, ['Set Paging Links # ' + this.nextPagingLinks()])
 			];
 		} else {
@@ -190,9 +201,23 @@ export class App extends WidgetBase {
 	private renderSelectionButtons() {
 		if (this.selectionOn) {
 			return [
-				v('button', { onclick: this.toggleDeselectOnRefresh }, [buildToggleLabel('Deselect On Referesh', this.deselectOnRefresh)]),
-				v('button', { onclick: this.toggleAllowSelectAll }, [buildToggleLabel('Select All', this.allowSelectAll)]),
-				v('button', { onclick: this.toggleAllowTextSelection }, [buildToggleLabel('Allow Text Selection', this.allowTextSelection)]),
+				v('div', [
+					v('button', { onclick: this.toggleDeselectOnRefresh }, [
+						buildToggleLabel('Deselect On Referesh', this.deselectOnRefresh)
+					]),
+					v('button', { onclick: this.toggleAllowSelectAll }, [
+						buildToggleLabel('Select All', this.allowSelectAll)
+					]),
+					v('button', { onclick: this.toggleAllowTextSelection }, [
+						buildToggleLabel('Allow Text Selection', this.allowTextSelection)
+					])
+				]),
+				v('div', [
+					v('button', { onclick: this.setSelectionModeNone }, ['Select Mode: None']),
+					v('button', { onclick: this.setSelectionModeMultiple }, ['Select Mode: Multiple']),
+					v('button', { onclick: this.setSelectionModeExtended }, ['Select Mode: Extended']),
+					v('button', { onclick: this.setSelectionModeSingle }, ['Select Mode: Single'])
+				])
 			];
 		} else {
 			return [];
@@ -217,6 +242,26 @@ export class App extends WidgetBase {
 	allowTextSelection = false;
 	private toggleAllowTextSelection(): void {
 		this.allowTextSelection = !this.allowTextSelection;
+		this.invalidate();
+	}
+
+	private setSelectionModeNone() {
+		this.selectionMode = SelectionMode.none;
+		this.invalidate();
+	}
+
+	private setSelectionModeMultiple() {
+		this.selectionMode = SelectionMode.multiple;
+		this.invalidate();
+	}
+
+	private setSelectionModeExtended() {
+		this.selectionMode = SelectionMode.extended;
+		this.invalidate();
+	}
+
+	private setSelectionModeSingle() {
+		this.selectionMode = SelectionMode.single;
 		this.invalidate();
 	}
 }
