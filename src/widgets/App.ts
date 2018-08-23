@@ -4,11 +4,22 @@ import DgridWrapper from '@dojo/interop/dgrid/DgridWrapper';
 import { duplicate } from '@dojo/framework/core/lang';
 import { SelectionData, SelectionMode, Selections, SelectionType } from '@dojo/interop/dgrid/DgridWrapperProperties';
 
+interface DataItem {
+	id: number;
+	first: string;
+	last: string;
+	hasChildren?: boolean;
+	parent?: number | null;
+}
+
 function buildToggleLabel(label: string, currentValue: boolean) {
 	return 'Turn ' + label + (currentValue ? ' Off' : ' On');
 }
 export class App extends WidgetBase {
-	private data = [{ first: 'Bob', last: 'Thomson', id: 1 }, { first: 'Tom', last: 'Bobson', id: 2 }];
+	private data: DataItem[] = [
+		{ first: 'Bob', last: 'Thomson', id: 1, hasChildren: true },
+		{ first: 'Tom', last: 'Bobson', id: 2, hasChildren: true }
+	];
 
 	protected render() {
 		return v('div', {}, [
@@ -16,7 +27,8 @@ export class App extends WidgetBase {
 				features: {
 					pagination: this.paginationOn,
 					keyboard: this.keyboardOn,
-					selection: this.selectionType
+					selection: this.selectionType,
+					tree: this.treeOn
 				},
 				data: this.data,
 				columns: this.columnDefs[this.columnToggle],
@@ -40,7 +52,11 @@ export class App extends WidgetBase {
 				onDeselect: (deselected: SelectionData, selections: Selections) => {
 					console.log('DESELECTED:', deselected);
 					console.log('SELECTIONS:', selections);
-				}
+				},
+
+				collapseOnRefresh: this.collapseOnRefresh,
+				enableTreeTransitions: this.enableTreeTransitions,
+				treeIndentWidth: this.treeIndentWidth
 			}),
 			v(
 				'button',
@@ -82,9 +98,19 @@ export class App extends WidgetBase {
 					{
 						onclick: this.toggleSelectionOnOff
 					},
-					[buildToggleLabel('Selection', this.selectionType == null)]
+					[buildToggleLabel('Selection', this.selectionType != null)]
 				),
 				v('div', this.renderSelectionButtons())
+			]),
+			v('p', [
+				v(
+					'button',
+					{
+						onclick: this.toggleTree
+					},
+					[buildToggleLabel('Tree', this.treeOn)]
+				),
+				v('div', this.renderTreeButtons())
 			])
 		]);
 	}
@@ -106,7 +132,7 @@ export class App extends WidgetBase {
 		}
 	}
 
-	paginationOn = true;
+	paginationOn = false;
 	private togglePagination(): void {
 		this.paginationOn = !this.paginationOn;
 		this.invalidate();
@@ -153,15 +179,25 @@ export class App extends WidgetBase {
 			return duplicate(item);
 		});
 		for (let i = 0; i < 20; i++) {
-			this.data.push({ first: 'Extra', last: 'Person', id: this.data.length + 1 });
+			this.data.push({
+				first: 'Extra',
+				last: 'Person',
+				id: this.data.length + 1,
+				hasChildren: false,
+				parent: (i % 2) + 1
+			});
 		}
 		this.invalidate();
 	}
 
 	columnToggle = 0;
 	columnDefs = [
-		[{ field: 'first', label: 'First' }, { field: 'last', label: 'Last' }],
-		[{ field: 'id', label: 'ID' }, { field: 'first', label: 'First' }, { field: 'last', label: 'Last' }]
+		[{ field: 'first', label: 'First', renderExpando: true }, { field: 'last', label: 'Last' }],
+		[
+			{ field: 'id', label: 'ID', renderExpando: true },
+			{ field: 'first', label: 'First' },
+			{ field: 'last', label: 'Last' }
+		]
 	];
 	private swapColumnDef(): void {
 		this.columnToggle = this.columnToggle ? 0 : 1;
@@ -272,6 +308,54 @@ export class App extends WidgetBase {
 	private setSelectionModeSingle() {
 		this.selectionMode = SelectionMode.single;
 		this.invalidate();
+	}
+
+	treeOn = false;
+	private toggleTree(): void {
+		this.treeOn = !this.treeOn;
+		this.invalidate();
+	}
+
+	private renderTreeButtons() {
+		if (this.treeOn) {
+			return [
+				v('div', [
+					v('button', { onclick: this.toggleCollapseOnRefresh }, [
+						buildToggleLabel('Collapse on Refresh', this.collapseOnRefresh)
+					]),
+					v('button', { onclick: this.toggleEnableTreeTransitions }, [
+						buildToggleLabel('Tree Transitions', this.enableTreeTransitions)
+					]),
+					v('button', { onclick: this.updateTreeIndentWidth }, [
+						'Set Tree Indent ' + this.nextTreeIndentWidth()
+					])
+				])
+			];
+		} else {
+			return [];
+		}
+	}
+
+	collapseOnRefresh = false;
+	private toggleCollapseOnRefresh() {
+		this.collapseOnRefresh = !this.collapseOnRefresh;
+		this.invalidate();
+	}
+
+	enableTreeTransitions = false;
+	private toggleEnableTreeTransitions() {
+		this.enableTreeTransitions = !this.enableTreeTransitions;
+		this.invalidate();
+	}
+
+	treeIndentWidth = 9;
+	private updateTreeIndentWidth() {
+		this.treeIndentWidth = this.nextTreeIndentWidth();
+		this.invalidate();
+	}
+
+	private nextTreeIndentWidth() {
+		return (this.treeIndentWidth + 20) % 100;
 	}
 }
 
