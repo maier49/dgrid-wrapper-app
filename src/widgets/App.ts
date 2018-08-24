@@ -2,7 +2,13 @@ import WidgetBase from '@dojo/framework/widget-core/WidgetBase';
 import { v, w } from '@dojo/framework/widget-core/d';
 import DgridWrapper from '@dojo/interop/dgrid/DgridWrapper';
 import { duplicate } from '@dojo/framework/core/lang';
-import { SelectionData, SelectionMode, Selections, SelectionType } from '@dojo/interop/dgrid/DgridWrapperProperties';
+import {
+	SelectionData,
+	SelectionMode,
+	Selections,
+	SelectionType,
+	ColumnStateChangeData
+} from '@dojo/interop/dgrid/DgridWrapperProperties';
 
 interface DataItem {
 	id: number;
@@ -28,7 +34,8 @@ export class App extends WidgetBase {
 					pagination: this.paginationOn,
 					keyboard: this.keyboardOn,
 					selection: this.selectionType,
-					tree: this.treeOn
+					tree: this.treeOn,
+					columnHider: this.columnHiderOn
 				},
 				data: this.data,
 				columns: this.columnDefs[this.columnToggle],
@@ -56,7 +63,11 @@ export class App extends WidgetBase {
 
 				collapseOnRefresh: this.collapseOnRefresh,
 				enableTreeTransitions: this.enableTreeTransitions,
-				treeIndentWidth: this.treeIndentWidth
+				treeIndentWidth: this.treeIndentWidth,
+
+				onColumnStateChange: (columnStateData: ColumnStateChangeData) => {
+					console.log('COLUMN STATE CHANGE', columnStateData);
+				}
 			}),
 			v(
 				'button',
@@ -111,6 +122,15 @@ export class App extends WidgetBase {
 					[buildToggleLabel('Tree', this.treeOn)]
 				),
 				v('div', this.renderTreeButtons())
+			]),
+			v('p', [
+				v(
+					'button',
+					{
+						onclick: this.toggleColumnHider
+					},
+					[buildToggleLabel('Column Hider', this.columnHiderOn)]
+				)
 			])
 		]);
 	}
@@ -356,6 +376,12 @@ export class App extends WidgetBase {
 
 	private nextTreeIndentWidth() {
 		return (this.treeIndentWidth + 20) % 100;
+	}
+
+	columnHiderOn = false;
+	private toggleColumnHider(): void {
+		this.columnHiderOn = !this.columnHiderOn;
+		this.invalidate();
 	}
 }
 
