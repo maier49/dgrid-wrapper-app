@@ -35,7 +35,8 @@ export class App extends WidgetBase {
 					keyboard: this.keyboardOn,
 					selection: this.selectionType,
 					tree: this.treeOn,
-					columnHider: this.columnHiderOn
+					columnHider: this.columnHiderOn,
+					columnReorder: this.columnReorderOn
 				},
 				data: this.data,
 				columns: this.columnDefs[this.columnToggle],
@@ -130,6 +131,15 @@ export class App extends WidgetBase {
 						onclick: this.toggleColumnHider
 					},
 					[buildToggleLabel('Column Hider', this.columnHiderOn)]
+				)
+			]),
+			v('p', [
+				v(
+					'button',
+					{
+						onclick: this.toggleColumnReorder
+					},
+					[buildToggleLabel('Column Reorder', this.columnReorderOn)]
 				)
 			])
 		]);
@@ -381,6 +391,12 @@ export class App extends WidgetBase {
 	columnHiderOn = false;
 	private toggleColumnHider(): void {
 		this.columnHiderOn = !this.columnHiderOn;
+		this.invalidate();
+	}
+
+	columnReorderOn = false;
+	private toggleColumnReorder(): void {
+		this.columnReorderOn = !this.columnReorderOn;
 		this.invalidate();
 	}
 }
