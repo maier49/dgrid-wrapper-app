@@ -4,7 +4,10 @@
             "baseUrl": "node_modules",
             "packages": [
               { "name": "dstore", "location": "dojo-dstore" }
-            ]
+            ],
+            "has": {
+            	"highcontrast": 0
+            }
           }
         },
 	"test-intern": {},
