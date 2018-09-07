@@ -27,6 +27,19 @@ export class App extends WidgetBase {
 		{ first: 'Tom', last: 'Bobson', id: 2, hasChildren: true }
 	];
 
+	columnSets = [
+		[[{ field: 'id', label: 'ID' }]],
+		[[{ field: 'first', label: 'First' }], [{ field: 'last', label: 'Last' }]]
+	];
+
+	compoundColumns = [
+		{
+			label: 'Full Name',
+			children: [{ field: 'first', label: 'First' }, { field: 'last', label: 'Last' }]
+		},
+		{ field: 'id', label: 'ID' }
+	];
+
 	protected render() {
 		return v('div', {}, [
 			w(DgridWrapper, {
@@ -37,10 +50,13 @@ export class App extends WidgetBase {
 					tree: this.treeOn,
 					columnHider: this.columnHiderOn,
 					columnReorder: this.columnReorderOn,
-					columnResizer: this.columnResizerOn
+					columnResizer: this.columnResizerOn,
+					compoundColumns: this.compoundColumnsOn,
+					columnSet: this.columnSetsOn
 				},
 				data: this.data,
-				columns: this.columnDefs[this.columnToggle],
+				columns: this.compoundColumnsOn ? this.compoundColumns : this.columnDefs[this.columnToggle],
+				columnSets: this.columnSets,
 
 				rowsPerPage: this.rowsPerPage,
 				previousNextArrows: this.previousNextArrows,
@@ -150,6 +166,24 @@ export class App extends WidgetBase {
 						onclick: this.toggleColumnResizer
 					},
 					[buildToggleLabel('Column Resizer', this.columnResizerOn)]
+				)
+			]),
+			v('p', [
+				v(
+					'button',
+					{
+						onclick: this.toggleCompoundColumns
+					},
+					[buildToggleLabel('Compound Columns', this.compoundColumnsOn)]
+				)
+			]),
+			v('p', [
+				v(
+					'button',
+					{
+						onclick: this.toggleColumnSets
+					},
+					[buildToggleLabel('Column Sets', this.columnSetsOn)]
 				)
 			])
 		]);
@@ -413,6 +447,18 @@ export class App extends WidgetBase {
 	columnResizerOn = false;
 	private toggleColumnResizer(): void {
 		this.columnResizerOn = !this.columnResizerOn;
+		this.invalidate();
+	}
+
+	compoundColumnsOn = false;
+	private toggleCompoundColumns(): void {
+		this.compoundColumnsOn = !this.compoundColumnsOn;
+		this.invalidate();
+	}
+
+	columnSetsOn = false;
+	private toggleColumnSets(): void {
+		this.columnSetsOn = !this.columnSetsOn;
 		this.invalidate();
 	}
 }
