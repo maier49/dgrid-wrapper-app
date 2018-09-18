@@ -5,7 +5,7 @@
     "prettier": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'"
   },
   "dependencies": {
-    "@dojo/framework": "~3.0.0",
+    "@dojo/framework": "^4.0.0-alpha.1",
     "@dojo/interop": "file:packages\\dojo-interop-3.0.1-pre.tgz",
     "dgrid": "^1.2.1",
     "dijit": "^1.13.0",
