@@ -1,5 +1,6 @@
-dojoConfig = {
-    baseUrl: "externals/",
+const globalObj = typeof window !== 'undefined' ? window : global;
+globalObj.dojoConfig = {
+    baseUrl: "output/test/externals",
     packages: [
         { name: 'dojo', location: 'dojo' },
         { name: 'dijit', location: 'dijit' },
@@ -7,9 +8,7 @@ dojoConfig = {
         { name: 'dstore', location: 'dstore' }
     ],
     has: {
-        highcontrast: 0,
-        'host-node': 1,
-        'dom': 0
+        highcontrast: 0
     },
     async: true
 };
