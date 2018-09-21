@@ -7,7 +7,8 @@
           { "from": "node_modules/dojo", "to": "dojo", "name": "dojo", "inject": "dojo.js", "type": "umd" },
           { "from": "node_modules/dijit", "to": "dijit", "name": "dijit", "type": "umd" },
           { "from": "node_modules/dgrid", "to": "dgrid", "name": "dgrid", "inject": "css/dgrid.css", "type": "umd" },
-          { "from": "node_modules/dojo-dstore", "to": "dstore", "name": "dstore", "type": "umd" }
+          { "from": "node_modules/dojo-dstore", "to": "dstore", "name": "dstore", "type": "umd" },
+          { "from": "global.js", "inject": true, "name": "globalThing", "type": "root" }
         ]
 	  }
     },
@@ -18,7 +19,8 @@
               { "from": "node_modules/dojo", "to": "dojo", "name": "dojo", "inject": "dojo.js" },
               { "from": "node_modules/dijit", "to": "dijit", "name": "dijit" },
               { "from": "node_modules/dgrid", "to": "dgrid", "name": "dgrid" },
-              { "from": "node_modules/dojo-dstore", "to": "dstore", "name": "dstore" }
+              { "from": "node_modules/dojo-dstore", "to": "dstore", "name": "dstore" },
+              { "from": "global.js", "inject": true }
             ]
 	    }
 	},

@@ -1,10 +1,12 @@
 import {SelectionMode} from "@dojo/interop/dgrid/DgridWrapperProperties";
 
 const { describe, it } = intern.getInterface('bdd');
+const { assert } = intern.getPlugin('chai');
 import harness from '@dojo/framework/testing/harness';
 
 import { v, w } from '@dojo/framework/widget-core/d';
 import DgridWrapper from '@dojo/interop/dgrid/DgridWrapper';
+import * as globalThing from 'globalThing';
 
 import App from '../../../src/widgets/App';
 
@@ -160,4 +162,8 @@ describe('App', () => {
         ])
 		);
 	});
+
+	it('should do the thing', () => {
+        assert.strictEqual(globalThing.doTheThing(), 'It did the thing');
+    });
 });

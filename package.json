@@ -16,8 +16,8 @@
     "tslib": "~1.8.1"
   },
   "devDependencies": {
-    "@dojo/cli-build-app": "file:~/Projects/opensource/dgrid-wrapper-app/packages/dojo-cli-build-app-4.0.0-pre.tgz",
-    "@dojo/cli-test-intern": "file:~/Projects/opensource/dgrid-wrapper-app/packages/dojo-cli-test-intern-3.0.1-pre.tgz",
+    "@dojo/cli-build-app": "file:./packages/dojo-cli-build-app-4.0.0-pre.tgz",
+    "@dojo/cli-test-intern": "file:./packages/dojo-cli-test-intern-3.0.1-pre.tgz",
     "@types/dojo": "^1.9.40",
     "@types/glob": "~5.0.0",
     "@types/grunt": "~0.4.0",
